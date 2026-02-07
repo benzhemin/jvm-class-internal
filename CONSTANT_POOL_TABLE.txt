@@ -1,0 +1,216 @@
+================================================================================
+COMPLETE CONSTANT POOL TABLE FOR SimpleExample.class
+================================================================================
+
+Generated from: javap -v SimpleExample
+
+Index | Type             | Tag | Content/References         | Decodes To
+------|------------------|-----|----------------------------|-------------------------------------------
+  1   | Methodref        | 10  | #2.#3                      | java/lang/Object.<init>():V
+  2   | Class            | 7   | #4                          | java/lang/Object
+  3   | NameAndType      | 12  | #5:#6                      | <init>:()V
+  4   | Utf8             | 1   | "java/lang/Object"         | (16 bytes)
+  5   | Utf8             | 1   | "<init>"                   | (6 bytes)
+  6   | Utf8             | 1   | "()V"                      | (3 bytes)
+-------|------------------|-----|----------------------------|-------------------------------------------
+  7   | Fieldref         | 9   | #8.#9                      | SimpleExample.myField:I
+-------|------------------|-----|----------------------------|-------------------------------------------
+  8   | Class            | 7   | #10                         | SimpleExample
+  9   | NameAndType      | 12  | #11:#12                    | myField:I
+ 10   | Utf8             | 1   | "SimpleExample"            | (13 bytes)
+ 11   | Utf8             | 1   | "myField"                  | (7 bytes)
+ 12   | Utf8             | 1   | "I"                        | (1 byte - int descriptor)
+-------|------------------|-----|----------------------------|-------------------------------------------
+ 13   | Fieldref         | 9   | #14.#15                    | java/lang/System.out:Ljava/io/PrintStream;
+-------|------------------|-----|----------------------------|-------------------------------------------
+ 14   | Class            | 7   | #16                         | java/lang/System
+ 15   | NameAndType      | 12  | #17:#18                    | out:Ljava/io/PrintStream;
+ 16   | Utf8             | 1   | "java/lang/System"         | (16 bytes)
+ 17   | Utf8             | 1   | "out"                      | (3 bytes)
+ 18   | Utf8             | 1   | "Ljava/io/PrintStream;"    | (21 bytes)
+-------|------------------|-----|----------------------------|-------------------------------------------
+ 19   | Methodref        | 10  | #20.#21                    | java/io/PrintStream.println:(I)V
+-------|------------------|-----|----------------------------|-------------------------------------------
+ 20   | Class            | 7   | #22                         | java/io/PrintStream
+ 21   | NameAndType      | 12  | #23:#24                    | println:(I)V
+ 22   | Utf8             | 1   | "java/io/PrintStream"      | (19 bytes)
+ 23   | Utf8             | 1   | "println"                  | (7 bytes)
+ 24   | Utf8             | 1   | "(I)V"                     | (4 bytes - method descriptor)
+-------|------------------|-----|----------------------------|-------------------------------------------
+ 25   | Utf8             | 1   | "Code"                     | (4 bytes - attribute name)
+ 26   | Utf8             | 1   | "LineNumberTable"          | (15 bytes - attribute name)
+ 27   | Utf8             | 1   | "printField"               | (10 bytes - method name)
+ 28   | Utf8             | 1   | "SourceFile"               | (10 bytes - attribute name)
+ 29   | Utf8             | 1   | "SimpleExample.java"       | (18 bytes - source file)
+-------|------------------|-----|----------------------------|-------------------------------------------
+
+================================================================================
+FIELD ACCESS FLOW: How "myField" is Resolved
+================================================================================
+
+Bytecode Instruction:
+    getfield #7
+
+Step 1: Look up Constant Pool Entry #7
+    #7 = Fieldref 9 | #8.#9
+                    └─ Tag = 9 (CONSTANT_Fieldref)
+                    └─ class_index = 8
+                    └─ name_and_type_index = 9
+
+Step 2: Resolve class_index (#8)
+    #8 = Class 7 | #10
+                 └─ Tag = 7 (CONSTANT_Class)
+                 └─ name_index = 10
+
+Step 3: Get class name (#10)
+    #10 = Utf8 1 | "SimpleExample"
+                  └─ Tag = 1 (CONSTANT_Utf8)
+                  └─ String = "SimpleExample"
+    
+    ✓ CLASS IDENTIFIED: SimpleExample
+
+Step 4: Resolve name_and_type_index (#9)
+    #9 = NameAndType 12 | #11:#12
+                         └─ Tag = 12 (CONSTANT_NameAndType)
+                         └─ name_index = 11
+                         └─ descriptor_index = 12
+
+Step 5: Get field name (#11)
+    #11 = Utf8 1 | "myField"
+                  └─ String = "myField"
+    
+    ✓ FIELD NAME IDENTIFIED: myField
+
+Step 6: Get field descriptor (#12)
+    #12 = Utf8 1 | "I"
+                  └─ String = "I" (meaning: int)
+    
+    ✓ FIELD TYPE IDENTIFIED: int
+
+COMPLETE RESOLUTION:
+    SimpleExample.myField:I
+    ├─ Class: SimpleExample
+    ├─ Field: myField
+    └─ Type: int
+
+JVM ACTION:
+    1. Load SimpleExample class (if not loaded)
+    2. Search for field "myField" in SimpleExample
+    3. Verify field type is int
+    4. Get field value from current object instance
+    5. Push value onto operand stack
+
+================================================================================
+METHOD CALL FLOW: How "println(int)" is Resolved
+================================================================================
+
+Bytecode Instruction:
+    invokevirtual #19
+
+Step 1: Look up Constant Pool Entry #19
+    #19 = Methodref 10 | #20.#21
+                       └─ Tag = 10 (CONSTANT_Methodref)
+                       └─ class_index = 20
+                       └─ name_and_type_index = 21
+
+Step 2: Resolve class_index (#20)
+    #20 = Class 7 | #22
+                  └─ Tag = 7 (CONSTANT_Class)
+                  └─ name_index = 22
+
+Step 3: Get class name (#22)
+    #22 = Utf8 1 | "java/io/PrintStream"
+                  └─ Tag = 1 (CONSTANT_Utf8)
+                  └─ String = "java/io/PrintStream"
+    
+    ✓ CLASS IDENTIFIED: java/io/PrintStream
+
+Step 4: Resolve name_and_type_index (#21)
+    #21 = NameAndType 12 | #23:#24
+                          └─ Tag = 12 (CONSTANT_NameAndType)
+                          └─ name_index = 23
+                          └─ descriptor_index = 24
+
+Step 5: Get method name (#23)
+    #23 = Utf8 1 | "println"
+                  └─ String = "println"
+    
+    ✓ METHOD NAME IDENTIFIED: println
+
+Step 6: Get method descriptor (#24)
+    #24 = Utf8 1 | "(I)V"
+                  └─ String = "(I)V"
+                  └─ Meaning: Takes 1 int parameter, returns void
+    
+    ✓ METHOD SIGNATURE IDENTIFIED: (I)V
+
+COMPLETE RESOLUTION:
+    java/io/PrintStream.println:(I)V
+    ├─ Class: java/io/PrintStream
+    ├─ Method: println
+    ├─ Parameters: [int]
+    └─ Return: void
+
+JVM ACTION:
+    1. Load java/io/PrintStream class (already loaded)
+    2. Get the actual PrintStream object from stack (System.out)
+    3. Lookup method "println" that takes int parameter
+    4. Perform virtual method dispatch (handles overrides)
+    5. Call the method with the int value from stack
+    6. Return from method
+
+================================================================================
+DESCRIPTOR SYNTAX REFERENCE
+================================================================================
+
+Field Descriptors (used in #12):
+    B = byte
+    C = char
+    D = double
+    F = float
+    I = int          ← Used for myField
+    J = long
+    S = short
+    Z = boolean
+    L<classname>; = object reference
+    [ = array
+
+Method Descriptors (used in #24):
+    (ParameterTypes)ReturnType
+    
+    (I)V = takes int, returns void
+           ├─ I = one int parameter
+           └─ V = void return (no return value)
+    
+    Other examples:
+    ()V = no parameters, void return
+    (II)I = two ints, returns int
+    (Ljava/lang/String;)V = String parameter, void return
+    ([I)I = int array parameter, returns int
+
+================================================================================
+BINARY REPRESENTATION
+================================================================================
+
+Constant Pool Entry #7 in hex:
+
+Offset  Bytes        Meaning
+------  -----        -------
+0xXX    09           Tag = 9 (CONSTANT_Fieldref)
+0xXX    00 08        class_index = 8 (big-endian u2)
+0xXX    00 09        name_and_type_index = 9 (big-endian u2)
+
+Size: 1 + 2 + 2 = 5 bytes per FIELDREF entry
+
+
+Constant Pool Entry #19 in hex:
+
+Offset  Bytes        Meaning
+------  -----        -------
+0xXX    0A           Tag = 10 (CONSTANT_Methodref)
+0xXX    00 14        class_index = 20 (big-endian u2, 0x14 = 20 decimal)
+0xXX    00 15        name_and_type_index = 21 (big-endian u2, 0x15 = 21 decimal)
+
+Size: 1 + 2 + 2 = 5 bytes per METHODREF entry
+
+================================================================================

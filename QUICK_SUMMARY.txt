@@ -1,0 +1,167 @@
+================================================================================
+JAVA CONSTANT POOL: FIELDREF & METHODREF - QUICK VISUAL SUMMARY
+================================================================================
+
+SIMPLE JAVA CODE:
+-----------------
+public class SimpleExample {
+    public int myField = 10;
+    
+    public void printField() {
+        System.out.println(myField);    // <-- Uses FIELDREF (#7) & METHODREF (#19)
+    }
+}
+
+================================================================================
+BYTECODE INSTRUCTION: getfield #7
+================================================================================
+
+Compiled to:
+    4: getfield #7   // Get field at constant pool index #7
+
+Constant Pool Resolution Chain:
+
+    #7 = Fieldref #8.#9
+         │
+         ├─ #8 = Class #10
+         │        └─ #10 = Utf8 "SimpleExample"
+         │
+         └─ #9 = NameAndType #11:#12
+                  ├─ #11 = Utf8 "myField"
+                  └─ #12 = Utf8 "I"
+
+Result:
+    ✓ Class: SimpleExample
+    ✓ Field: myField
+    ✓ Type: int
+
+================================================================================
+BYTECODE INSTRUCTION: invokevirtual #19
+================================================================================
+
+Compiled to:
+    7: invokevirtual #19   // Call method at constant pool index #19
+
+Constant Pool Resolution Chain:
+
+    #19 = Methodref #20.#21
+          │
+          ├─ #20 = Class #22
+          │         └─ #22 = Utf8 "java/io/PrintStream"
+          │
+          └─ #21 = NameAndType #23:#24
+                   ├─ #23 = Utf8 "println"
+                   └─ #24 = Utf8 "(I)V"
+
+Result:
+    ✓ Class: java/io/PrintStream
+    ✓ Method: println
+    ✓ Parameters: int
+    ✓ Return: void
+
+================================================================================
+CONSTANT POOL ENTRY STRUCTURE
+================================================================================
+
+CONSTANT_Fieldref (Tag 9):
+    ┌─────────────────┐
+    │ Tag (1 byte)    │ = 9
+    ├─────────────────┤
+    │ class_index     │ = 2-byte pointer to CONSTANT_Class
+    │ (2 bytes)       │
+    ├─────────────────┤
+    │ name_and_type   │ = 2-byte pointer to CONSTANT_NameAndType
+    │ _index (2 bytes)│
+    └─────────────────┘
+    Total: 5 bytes per entry
+
+
+CONSTANT_Methodref (Tag 10):
+    ┌─────────────────┐
+    │ Tag (1 byte)    │ = 10
+    ├─────────────────┤
+    │ class_index     │ = 2-byte pointer to CONSTANT_Class
+    │ (2 bytes)       │
+    ├─────────────────┤
+    │ name_and_type   │ = 2-byte pointer to CONSTANT_NameAndType
+    │ _index (2 bytes)│
+    └─────────────────┘
+    Total: 5 bytes per entry
+
+
+CONSTANT_Class (Tag 7):
+    ┌─────────────────┐
+    │ Tag (1 byte)    │ = 7
+    ├─────────────────┤
+    │ name_index      │ = 2-byte pointer to CONSTANT_Utf8
+    │ (2 bytes)       │
+    └─────────────────┘
+    Total: 3 bytes per entry
+
+
+CONSTANT_NameAndType (Tag 12):
+    ┌─────────────────┐
+    │ Tag (1 byte)    │ = 12
+    ├─────────────────┤
+    │ name_index      │ = 2-byte pointer to CONSTANT_Utf8 (name)
+    │ (2 bytes)       │
+    ├─────────────────┤
+    │ descriptor_     │ = 2-byte pointer to CONSTANT_Utf8 (type)
+    │ index (2 bytes) │
+    └─────────────────┘
+    Total: 5 bytes per entry
+
+
+CONSTANT_Utf8 (Tag 1):
+    ┌─────────────────┐
+    │ Tag (1 byte)    │ = 1
+    ├─────────────────┤
+    │ length (2 bytes)│ = number of UTF-8 bytes
+    ├─────────────────┤
+    │ bytes (N bytes) │ = actual string data
+    │                 │
+    └─────────────────┘
+    Total: 3 + N bytes per entry
+
+================================================================================
+RUNTIME MAPPING TO INSTANCE CLASS
+================================================================================
+
+When JVM executes "getfield #7":
+
+    Bytecode: getfield #7
+        ↓
+    Constant Pool #7 (CONSTANT_Fieldref)
+        ↓
+    Resolve: SimpleExample.myField:I
+        ↓
+    Load Class: SimpleExample (if not already loaded)
+        ↓
+    Search Class Metadata: Find field "myField"
+        ↓
+    Validate Type: Confirm field is "int"
+        ↓
+    From Object Instance: Get the field value
+        ↓
+    Push onto Stack: Ready for next operation
+
+================================================================================
+KEY INSIGHT: INDIRECT REFERENCE DESIGN
+================================================================================
+
+Why use indices instead of storing names directly?
+
+• Compact: 2-byte index << storing full "SimpleExample" or "myField"
+• Reusable: Multiple entries can reference same class/method
+• Efficient: Quick binary search/lookup
+• Validation: Type information available for type-safe operations
+
+Example:
+    Entry #7: FIELDREF #8.#9  (5 bytes total)
+    Entry #8: CLASS #10        (3 bytes total)
+    Entry #10: UTF8 "SimpleExample" (19 bytes total)
+    
+    If we stored the full string in #7: would be ~40 bytes
+    Instead: 5 + 3 + 19 = 27 bytes (when shared with other references)
+
+================================================================================

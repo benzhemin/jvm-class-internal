@@ -1,0 +1,288 @@
+================================================================================
+VISUAL RESOLUTION FLOWS - FIELDREF vs METHODREF
+================================================================================
+
+================================================================================
+FIELD RESOLUTION FLOW - getfield #7
+================================================================================
+
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Java Source Code                                               │
+   ├────────────────────────────────────────────────────────────────┤
+   │ public int myField = 10;                                       │
+   └────────────────────────────────────────────────────────────────┘
+                            ↓
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Compiled to Bytecode                                           │
+   ├────────────────────────────────────────────────────────────────┤
+   │ getfield #7    // Get field referenced at constant pool index 7│
+   └────────────────────────────────────────────────────────────────┘
+                            ↓
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Constant Pool Lookup: Index #7                                 │
+   ├────────────────────────────────────────────────────────────────┤
+   │ #7 = Fieldref                                                  │
+   │      ├─ class_index = 8                                        │
+   │      └─ name_and_type_index = 9                               │
+   └────────────────────────────────────────────────────────────────┘
+         │                                           │
+         ├─────────────────────────┬─────────────────┘
+         │                         │
+         ↓                         ↓
+    ┌─────────────┐        ┌──────────────────┐
+    │ Follow #8   │        │ Follow #9        │
+    │ (Class)     │        │ (NameAndType)    │
+    └─────────────┘        └──────────────────┘
+         │                         │
+         ├─ #8 = Class            ├─ #9 = NameAndType
+         │      └─ name_index=10  │      ├─ name_index=11
+         │                        │      └─ descriptor_index=12
+         │                        │
+         ├─ #10 = Utf8            ├─ #11 = Utf8
+         │   "SimpleExample"      │   "myField"
+         │                        │
+         │                        ├─ #12 = Utf8
+         │                        │   "I"
+         │                        │
+         └────────────┬───────────┘
+                      ↓
+    ┌──────────────────────────────────────────┐
+    │ RESOLVED INFORMATION                     │
+    ├──────────────────────────────────────────┤
+    │ ✓ Class: SimpleExample                   │
+    │ ✓ Field: myField                         │
+    │ ✓ Type: int (descriptor "I")             │
+    └──────────────────────────────────────────┘
+                      ↓
+    ┌──────────────────────────────────────────┐
+    │ JVM RUNTIME ACTIONS                      │
+    ├──────────────────────────────────────────┤
+    │ 1. Load SimpleExample class              │
+    │ 2. Find field "myField" in class         │
+    │ 3. Verify field type is int              │
+    │ 4. Get field value from object instance  │
+    │ 5. Push value onto operand stack         │
+    └──────────────────────────────────────────┘
+
+================================================================================
+METHOD RESOLUTION FLOW - invokevirtual #19
+================================================================================
+
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Java Source Code                                               │
+   ├────────────────────────────────────────────────────────────────┤
+   │ System.out.println(myField);  // Call method with int param    │
+   └────────────────────────────────────────────────────────────────┘
+                            ↓
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Compiled to Bytecode                                           │
+   ├────────────────────────────────────────────────────────────────┤
+   │ invokevirtual #19   // Call method at constant pool index 19   │
+   └────────────────────────────────────────────────────────────────┘
+                            ↓
+   ┌────────────────────────────────────────────────────────────────┐
+   │ Constant Pool Lookup: Index #19                                │
+   ├────────────────────────────────────────────────────────────────┤
+   │ #19 = Methodref                                                │
+   │       ├─ class_index = 20                                      │
+   │       └─ name_and_type_index = 21                              │
+   └────────────────────────────────────────────────────────────────┘
+          │                                            │
+          ├──────────────────────────┬────────────────┘
+          │                          │
+          ↓                          ↓
+     ┌──────────────┐        ┌───────────────────┐
+     │ Follow #20   │        │ Follow #21        │
+     │ (Class)      │        │ (NameAndType)     │
+     └──────────────┘        └───────────────────┘
+          │                          │
+          ├─ #20 = Class            ├─ #21 = NameAndType
+          │      └─ name_index=22   │      ├─ name_index=23
+          │                         │      └─ descriptor_index=24
+          │                         │
+          ├─ #22 = Utf8             ├─ #23 = Utf8
+          │   "java/io/PrintStream" │   "println"
+          │                         │
+          │                         ├─ #24 = Utf8
+          │                         │   "(I)V"
+          │                         │
+          └─────────────┬───────────┘
+                        ↓
+     ┌──────────────────────────────────────────┐
+     │ RESOLVED INFORMATION                     │
+     ├──────────────────────────────────────────┤
+     │ ✓ Class: java/io/PrintStream             │
+     │ ✓ Method: println                        │
+     │ ✓ Parameters: int (descriptor "(I)V")    │
+     │ ✓ Return: void                           │
+     └──────────────────────────────────────────┘
+                        ↓
+     ┌──────────────────────────────────────────┐
+     │ JVM RUNTIME ACTIONS                      │
+     ├──────────────────────────────────────────┤
+     │ 1. Load java/io/PrintStream class        │
+     │ 2. Get PrintStream object from stack     │
+     │ 3. Find method "println" that takes int  │
+     │ 4. Perform virtual method dispatch       │
+     │ 5. Call method with int parameter        │
+     │ 6. Return from method                    │
+     └──────────────────────────────────────────┘
+
+================================================================================
+CONSTANT POOL POINTER GRAPH
+================================================================================
+
+                  CONSTANT POOL TABLE
+    
+    #1  ├─ Methodref → #2.#3
+    #2  ├─ Class → #4
+    #3  ├─ NameAndType → #5:#6
+    #4  ├─ Utf8 "java/lang/Object"
+    #5  ├─ Utf8 "<init>"
+    #6  ├─ Utf8 "()V"
+        │
+    #7  ├─ Fieldref → #8.#9           ← Field Resolution
+        │                  │
+    #8  ├─ Class → #10     │           
+        │         │        │
+    #9  ├─ NameAndType → #11:#12
+        │                  │    │
+   #10  ├─ Utf8 "SimpleExample" │
+        │                  │    │
+   #11  ├─ Utf8 "myField" ←┘    │
+   #12  ├─ Utf8 "I" ────────────┘
+        │
+   #13  ├─ Fieldref → #14.#15
+   #14  ├─ Class → #16
+   #15  ├─ NameAndType → #17:#18
+   #16  ├─ Utf8 "java/lang/System"
+   #17  ├─ Utf8 "out"
+   #18  ├─ Utf8 "Ljava/io/PrintStream;"
+        │
+   #19  ├─ Methodref → #20.#21        ← Method Resolution
+        │                   │
+   #20  ├─ Class → #22      │
+        │         │         │
+   #21  ├─ NameAndType → #23:#24
+        │                   │    │
+   #22  ├─ Utf8 "java/io/PrintStream"
+        │                   │    │
+   #23  ├─ Utf8 "println" ←┘    │
+   #24  ├─ Utf8 "(I)V" ─────────┘
+        │
+   #25  ├─ Utf8 "Code"
+   #26  ├─ Utf8 "LineNumberTable"
+   #27  ├─ Utf8 "printField"
+   #28  ├─ Utf8 "SourceFile"
+   #29  ├─ Utf8 "SimpleExample.java"
+
+================================================================================
+BYTECODE TO CONSTANT POOL MAPPING
+================================================================================
+
+Bytecode:
+┌────────────────────────────────────────────────┐
+│ 00: aload_0           // Load 'this' reference │
+│ 01: invokespecial #1  // Call Object.<init>    │
+│ 04: aload_0           // Load 'this'           │
+│ 05: bipush 10         // Push int 10           │
+│ 07: putfield #7       // Set myField = 10     ├─ Points to #7
+│ 10: return            // Return from method    │
+│ ...                                            │
+│ 00: getstatic #13     // Get System.out       ├─ Points to #13
+│ 03: aload_0           // Load 'this'           │
+│ 04: getfield #7       // Get myField         ├─ Points to #7
+│ 07: invokevirtual #19 // Call println()      ├─ Points to #19
+│ 10: return            // Return                │
+└────────────────────────────────────────────────┘
+
+Constant Pool References:
+┌──────────────────────────────────────────────────────────┐
+│ #1:  java/lang/Object.<init>():V  (Object constructor)   │
+│ #7:  SimpleExample.myField:I       (Field declaration)   │
+│ #13: java/lang/System.out:PrintStream  (Static field)    │
+│ #19: java/io/PrintStream.println:(I)V  (Method call)     │
+└──────────────────────────────────────────────────────────┘
+
+================================================================================
+MEMORY LAYOUT IN RUNTIME
+================================================================================
+
+When JVM executes:
+
+    SimpleExample obj = new SimpleExample();
+    obj.myField = 10;
+    System.out.println(obj.myField);
+
+Memory State:
+
+┌────────────────────────────────────────────────────────┐
+│ HEAP                                                   │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│ SimpleExample Instance (object):                      │
+│ ┌──────────────────────────────────┐                  │
+│ │ ClassPtr: → SimpleExample class  │                  │
+│ │ myField:  → 10 (int)             │                  │
+│ └──────────────────────────────────┘                  │
+│         ↑                                              │
+│         obj (reference)                               │
+│                                                        │
+│ System.out (PrintStream instance):                    │
+│ ┌──────────────────────────────────┐                  │
+│ │ ClassPtr: → PrintStream class    │                  │
+│ │ [PrintStream fields...]          │                  │
+│ └──────────────────────────────────┘                  │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────┐
+│ CLASS METADATA (loaded by ClassLoader)                 │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│ SimpleExample Class:                                  │
+│ ├─ Name: "SimpleExample"                              │
+│ ├─ Fields:                                            │
+│ │  └─ myField (type: int)                            │
+│ ├─ Methods:                                           │
+│ │  ├─ <init>():V                                     │
+│ │  └─ printField():V                                 │
+│ └─ [bytecode and constant pool]                       │
+│                                                        │
+│ java.io.PrintStream Class:                           │
+│ ├─ Name: "java/io/PrintStream"                        │
+│ ├─ Methods:                                           │
+│ │  ├─ println(int)                                   │
+│ │  ├─ println(String)                                │
+│ │  └─ [other methods...]                             │
+│ └─ [bytecode and constant pool]                       │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+
+================================================================================
+CONSTANT POOL ENTRY TYPES USED IN THIS EXAMPLE
+================================================================================
+
+       Entry Type         Tag  Purpose                   Size
+       ────────────────────────────────────────────────────────
+       CONSTANT_Methodref  10  Reference method        5 bytes
+       CONSTANT_Fieldref    9  Reference field         5 bytes
+       CONSTANT_Class       7  Reference class         3 bytes
+       CONSTANT_NameAndType 12  Name + descriptor      5 bytes
+       CONSTANT_Utf8        1  String storage          3+N bytes
+
+
+Seven entry types form linked structure:
+
+    Bytecode Instruction
+         ↓
+    [Fieldref/Methodref] ────┬────────────┐
+         ↓                   ↓            ↓
+       [Class]         [NameAndType]
+         ↓              ├── [Utf8] name
+         ↓              └── [Utf8] descriptor
+       [Utf8] classname
+
+Result: Complete resolved information ready for JVM execution
+
+================================================================================
